@@ -56,7 +56,9 @@ jobs:
 
       # Secrets & Code Vulnerabilities
       - name: Check for secrets
-        run: trufflehog git https://github.com/$GITHUB_REPOSITORY --only-verified
+        uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
+        with:
+          args: --fail-verified ${{ github.event.repository.default_branch }} HEAD
 
       - name: Golang - Run Snyk to check for vulnerabilities
         uses: snyk/actions/golang@master
