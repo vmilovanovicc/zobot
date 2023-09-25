@@ -53,7 +53,7 @@ jobs:
       - name: Check for secrets
         run: trufflehog git https://github.com/$GITHUB_REPOSITORY --only-verified
 
-      - name: [Golang] Run Snyk to check for vulnerabilities
+      - name: Golang - Run Snyk to check for vulnerabilities
         uses: snyk/actions/golang@master
         continue-on-error: true # To make sure that SARIF upload gets called
         env:
@@ -67,7 +67,7 @@ jobs:
           sarif_file: snyk_go.sarif
 
 
-      - name: [Terraform] Run Snyk to check for vulnerabilities
+      - name: Terraform - Run Snyk to check for vulnerabilities
         uses: snyk/actions/iac@master
         continue-on-error: true
         env:
