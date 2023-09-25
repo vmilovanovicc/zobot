@@ -1,11 +1,53 @@
 # zobot
 Chatbot Translator App with AWS, Golang and Terraform
 
-# Prerequisites 
+# Overview
+## Prerequisites 
 
 | Tools     | Version   |
 |-----------|-----------|
 | Go        | `>= 1.20.3` |
 | Terraform | `>= 1.5.0`  |
 
+## AWS Services 
+
+| Service            | Description                                              |
+|--------------------|----------------------------------------------------------|
+| Amazon Comprehend  | Detect the language source                               |
+| Amazon Translate   | Translate user-generated content                         |
+| Amazon Polly       | Turn text into life-like speech                          |
+| Amazon Lex         | Build bots with Conversational AI                        |
+| Amazon S3          | Object storage                                           |
+| AWS Lambda         | Run code without provisioning or managing infrastructure |
+
 ---
+
+## HLA
+
+![zobot diagram](assets/zobot_diagram.png)
+
+---
+
+# References
+
+## AWS SDK for Go
+
+- [AWS SDK Go Reference](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2#section-readme)
+- [`translate` API client](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/translate)
+
+
+## AWS Documentation
+
+- [Amazon Comprehend](https://aws.amazon.com/comprehend/)
+- [Amazon Translate](https://aws.amazon.com/translate/)
+- [Amazon Polly](https://aws.amazon.com/polly/)
+- [Amazon Lex](https://aws.amazon.com/lex/)
+- [Amazon S3](https://aws.amazon.com/s3/)
+- [AWS Lambda](https://aws.amazon.com/lambda/)
+
+## Terraform Resources Documentation
+
+## Other
+
+- [trufflehog](https://github.com/trufflesecurity/trufflehog) - Secrets/Security Scan
+- [snyk](https://github.com/snyk/actions) - Code Vulnerabilities Scan

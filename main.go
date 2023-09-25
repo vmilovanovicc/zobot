@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"zobot/backend"
+)
 
 func main() {
-	fmt.Println("Hello, World!") // placeholder
+	backend.TranslateText("hello world", "es")
 }
