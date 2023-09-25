@@ -28,6 +28,10 @@ Chatbot Translator App with AWS, Golang and Terraform
 
 ---
 
+## Testing
+
+Table-driven unit tests can be found [here](/backend).
+
 # References
 
 ## AWS SDK for Go

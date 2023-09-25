@@ -2,12 +2,13 @@ package backend
 
 import (
 	context "context"
+	"fmt"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/translate"
 	"log"
 )
 
-// TranslateText detects the language and translates the text into a desired language.
+// TranslateText detects the source language and translates the text into a desired language.
 func TranslateText(text, language string) (string, error) {
 	// Load the Shared AWS Configuration (~/.aws/config)
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-central-1"))
@@ -31,6 +32,6 @@ func TranslateText(text, language string) (string, error) {
 		log.Fatalf("cannot translate, %v\n", err)
 		return "", err
 	}
-	//println(*resp.TranslatedText)
+	fmt.Println(*resp.TranslatedText)
 	return *resp.TranslatedText, nil
 }
