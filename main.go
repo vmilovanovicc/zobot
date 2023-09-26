@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
-	backend.TranslateText("hello world", "es")
+	backend.TranslateText("hello world", "en")
+	backend.GetTargetVoice("es")
 }

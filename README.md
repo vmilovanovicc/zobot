@@ -26,6 +26,11 @@ Chatbot Translator App with AWS, Golang and Terraform
 
 ![zobot diagram](assets/zobot_diagram.png)
 
+Supported Languages:
+- English
+- Spanish
+- French
+
 ---
 
 ## Testing
@@ -48,8 +53,10 @@ Table-driven unit tests can be found [here](/backend).
 - [Amazon Lex](https://aws.amazon.com/lex/)
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [AWS Lambda](https://aws.amazon.com/lambda/)
-
-## Terraform Resources Documentation
+---
+- [Translate Supported Languages](https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html)
+- [Polly Voice List](https://docs.aws.amazon.com/polly/latest/dg/voicelist.html)
+- [Polly Supported Languages](https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html)
 
 ## Other
 
