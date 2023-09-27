@@ -34,8 +34,7 @@ Supported Languages:
 ---
 
 ## Testing
-
-Table-driven unit tests can be found [here](/backend).
+Unit tests and [mocks](/backend/mock_client_ops.go) can be found [here](/backend).
 
 # References
 
@@ -59,6 +58,5 @@ Table-driven unit tests can be found [here](/backend).
 - [Polly Supported Languages](https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html)
 
 ## Other
-
 - [trufflehog](https://github.com/trufflesecurity/trufflehog) - Secrets/Security Scan
 - [snyk](https://github.com/snyk/actions) - Code Vulnerabilities Scan

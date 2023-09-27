@@ -26,6 +26,7 @@ func TranslateText(text, language string) (string, error) {
 		SourceLanguageCode: &sourceLanguageCode,
 		TargetLanguageCode: &language,
 	}
+
 	ctx := context.TODO()
 	resp, err := client.TranslateText(ctx, params)
 	if err != nil {
