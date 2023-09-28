@@ -36,12 +36,16 @@ Supported Languages:
 ## Testing
 Unit tests and [mocks](/backend/mock_client_ops.go) can be found [here](/backend).
 
+---
+
 # References
 
 ## AWS SDK for Go
 
 - [AWS SDK Go v2 Reference](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2#section-readme)
 - [`translate` API client](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/translate)
+- [`polly` API client](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/polly)
+- [`s3` API client](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/s3)
 
 
 ## AWS Documentation

@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/polly/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	types2 "github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"time"
 
 	"log"
 	"strings"
@@ -33,7 +34,9 @@ func GetTargetVoice(language string) (string, error) {
 func CreateBucket(bucketName string) (location string, err error) {
 	cfg := LoadAWSConfig()
 	client := s3.NewFromConfig(cfg)
-	bucketLocationConstraint := types2.BucketLocationConstraintEuCentral1
+
+	bucketName = fmt.Sprintf("%s-%s", "amazon-polly-audio", time.Now().Format("01022006"))
+	bucketLocationConstraint := types2.BucketLocationConstraint(region)
 
 	params := &s3.CreateBucketInput{
 		Bucket: &bucketName,
@@ -61,7 +64,6 @@ func GetSpeechSynthesisTaskId(text, bucketName, languageCode, targetVoice string
 	engine := types.EngineStandard
 	targetVoice, _ = GetTargetVoice(languageCode)
 	targetVoiceId := types.VoiceId(targetVoice)
-
 	params := &polly.StartSpeechSynthesisTaskInput{
 		Text:               &text,
 		OutputS3BucketName: &bucketName,

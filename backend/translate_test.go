@@ -40,7 +40,7 @@ func TestTranslateTextFromTranslate(t *testing.T) {
 					return &translate.TranslateTextOutput{
 						TranslatedText: &translatedText,
 					}, nil
-				}) // end client
+				})
 			},
 			language: "es",
 			text:     "Good evening",
