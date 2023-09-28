@@ -1,8 +1,6 @@
 package main
 
-import (
-	"zobot/backend"
-)
+import "zobot/backend"
 
 func main() {
 	// placeholder
