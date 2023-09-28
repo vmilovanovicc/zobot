@@ -36,7 +36,7 @@ func GetSpeechSynthesisTaskId(text, bucketName, languageCode, targetVoice string
 	targetVoice, _ = GetTargetVoice(languageCode)
 	targetVoiceId := types.VoiceId(targetVoice)
 	bucketName, _ = GetBucketName("")
-	
+
 	params := &polly.StartSpeechSynthesisTaskInput{
 		Text:               &text,
 		OutputS3BucketName: &bucketName,

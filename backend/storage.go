@@ -15,7 +15,7 @@ import (
 func CreateBucket(bucketName string) (location string, err error) {
 	cfg := LoadAWSConfig()
 	client := s3.NewFromConfig(cfg)
-
+	// To ensure the bucket name is unique. No need to check if the bucket already exists.
 	bucketName = fmt.Sprintf("%s-%s", "amazon-polly-audio", time.Now().Format("01022006150405"))
 	bucketLocationConstraint := types2.BucketLocationConstraint(region)
 
