@@ -40,7 +40,7 @@ Unit tests and [mocks](/backend/mock_client_ops.go) can be found [here](/backend
 
 ## AWS SDK for Go
 
-- [AWS SDK Go Reference](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2#section-readme)
+- [AWS SDK Go v2 Reference](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2#section-readme)
 - [`translate` API client](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/translate)
 
 
@@ -53,9 +53,9 @@ Unit tests and [mocks](/backend/mock_client_ops.go) can be found [here](/backend
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [AWS Lambda](https://aws.amazon.com/lambda/)
 ---
-- [Translate Supported Languages](https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html)
-- [Polly Voice List](https://docs.aws.amazon.com/polly/latest/dg/voicelist.html)
-- [Polly Supported Languages](https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html)
+- [Amazon - Translate Supported Languages](https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html)
+- [Amazon Polly -  Voice List](https://docs.aws.amazon.com/polly/latest/dg/voicelist.html)
+- [Amazon Polly - Supported Languages](https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html)
 
 ## Other
 - [trufflehog](https://github.com/trufflesecurity/trufflehog) - Secrets/Security Scan
