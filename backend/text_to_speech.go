@@ -6,6 +6,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/polly"
 	"github.com/aws/aws-sdk-go-v2/service/polly/types"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	types2 "github.com/aws/aws-sdk-go-v2/service/s3/types"
+
 	"log"
 	"strings"
 )
@@ -25,6 +28,34 @@ func GetTargetVoice(language string) (string, error) {
 	}
 	fmt.Println(targetVoice)
 	return targetVoice, nil
+}
+
+// CreateBucket creates an S3 bucket to store the output of Amazon Polly Synthesis Tasks i.e. audio streams.
+func CreateBucket(bucketName string) (location string, err error) {
+	// Load the Shared AWS Configuration (~/.aws/config)
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-central-1"))
+	if err != nil {
+		log.Fatalf("failed to load configuration, %v\n", err)
+	}
+
+	client := s3.NewFromConfig(cfg)
+	bucketLocationConstraint := types2.BucketLocationConstraintEuCentral1
+
+	params := &s3.CreateBucketInput{
+		Bucket: &bucketName,
+		CreateBucketConfiguration: &types2.CreateBucketConfiguration{
+			LocationConstraint: bucketLocationConstraint,
+		}, // basic configuration
+	}
+	ctx := context.TODO()
+	resp, err := client.CreateBucket(ctx, params)
+	if err != nil {
+		log.Fatalf("failed to create s3 bucket, error:  %v\n", err)
+		return "", err
+	}
+	location = *resp.Location
+	fmt.Println(location)
+	return location, nil
 }
 
 // GetSpeechSynthesisTaskId function creates a synthesis task which converts provided text into an audio stream.
