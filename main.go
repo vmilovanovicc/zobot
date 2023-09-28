@@ -5,7 +5,8 @@ import "zobot/backend"
 func main() {
 	// placeholder
 	backend.TranslateText("hello world", "en")
-	backend.CreateBucket("") // generated
+	backend.CreateBucket("")
+	backend.GetBucketName("")
 	backend.GetTargetVoice("es")
 	backend.GetSpeechSynthesisTaskId("Testing speech to voice functionality", "\"amazon-polly-output-bkt", "es", "")
 }
