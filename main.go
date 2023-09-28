@@ -8,5 +8,5 @@ func main() {
 	backend.CreateBucket("")
 	backend.GetBucketName("")
 	backend.GetTargetVoice("es")
-	backend.GetSpeechSynthesisTaskId("Testing speech to voice functionality", "\"amazon-polly-output-bkt", "es", "")
+	backend.GetSpeechSynthesisTaskId("Testing speech to voice functionality", "", "es", "")
 }
