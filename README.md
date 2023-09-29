@@ -1,7 +1,12 @@
 # zobot
 Chatbot Translator App with AWS, Golang and Terraform
 
-# Overview
+<img alt="ProjectStatus" src="https://img.shields.io/badge/IN%20PROGRESS-097969?style=for-the-badge&logo=IN%20PROGRESS&logoColor=FFF">
+<br/>
+<img alt="Go" src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white">
+<img alt="AWS" src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white">
+<img alt="Terraform" src="https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white">
+
 ## Prerequisites 
 
 | Tools     | Version   |
@@ -37,7 +42,7 @@ Chatbot Translator App with AWS, Golang and Terraform
 - With AWS Polly, **zobot** transforms the translated text with the correct pronunciation into a lifelike speech.
 - **zobot** keeps all audio messages in an S3 bucket.
 
-### Supported Languages
+#### Supported Languages
 - English
 - Spanish
 - French
