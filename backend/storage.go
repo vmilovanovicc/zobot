@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	types2 "github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"log"
 	"net/url"
 	"strings"
@@ -15,14 +15,12 @@ import (
 func CreateBucket(bucketName string) (location string, err error) {
 	cfg := LoadAWSConfig()
 	client := s3.NewFromConfig(cfg)
-	// To ensure the bucket name is unique. No need to check if the bucket already exists.
 	bucketName = fmt.Sprintf("%s-%s", "amazon-polly-audio", time.Now().Format("01022006150405"))
-	bucketLocationConstraint := types2.BucketLocationConstraint(region)
 
 	params := &s3.CreateBucketInput{
 		Bucket: &bucketName,
-		CreateBucketConfiguration: &types2.CreateBucketConfiguration{
-			LocationConstraint: bucketLocationConstraint,
+		CreateBucketConfiguration: &types.CreateBucketConfiguration{
+			LocationConstraint: types.BucketLocationConstraint(region),
 		}, // basic configuration
 	}
 	ctx := context.TODO()

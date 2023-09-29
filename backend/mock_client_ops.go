@@ -5,6 +5,8 @@ package backend
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/translate"
 )
 
@@ -27,4 +29,25 @@ func TranslateTextFromTranslate(ctx context.Context, api TranslateTranslateTextA
 		return "", err
 	}
 	return *response.TranslatedText, nil
+}
+
+//////////////////////////////////////////
+//         CreateBucket Mock
+//////////////////////////////////////////
+
+type S3CreateBucketAPI interface {
+	CreateBucket(ctx context.Context, params *s3.CreateBucketInput, optFns ...func(*s3.Options)) (*s3.CreateBucketOutput, error)
+}
+
+func CreateBucketFromS3(ctx context.Context, api S3CreateBucketAPI, bucketName string) (string, error) {
+	response, err := api.CreateBucket(ctx, &s3.CreateBucketInput{
+		Bucket: &bucketName,
+		CreateBucketConfiguration: &types.CreateBucketConfiguration{
+			LocationConstraint: types.BucketLocationConstraint(region),
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+	return *response.Location, nil
 }
