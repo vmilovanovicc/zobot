@@ -39,11 +39,11 @@ func TestGetTargetVoice(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := GetTargetVoice(tt.args.language)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GetTargetVoice() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("got error %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("GetTargetVoice() got = %v, want %v", got, tt.want)
+				t.Errorf(" got error %v, want %v", got, tt.want)
 			}
 		})
 	}

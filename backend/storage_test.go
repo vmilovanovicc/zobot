@@ -2,6 +2,7 @@ package backend
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"regexp"
 	"testing"
@@ -24,11 +25,10 @@ func isValidBucketName(bucketName string) bool {
 }
 
 func TestCreateBucketFromS3(t *testing.T) {
-	location := "http://amazon-polly-09232023111111.s3.amazonaws.com/"
 	cases := []struct {
-		client     func(t *testing.T) S3CreateBucketAPI
-		bucketName string
-		expect     string
+		client         func(t *testing.T) S3CreateBucketAPI
+		bucketName     string
+		expectLocation string
 	}{
 		{
 			client: func(t *testing.T) S3CreateBucketAPI {
@@ -43,29 +43,27 @@ func TestCreateBucketFromS3(t *testing.T) {
 					if !isValidBucketName(*params.Bucket) {
 						t.Fatalf("expect bucket to meet S3 bucket naming rules")
 					}
-					if e, a := "http://amazon-polly-09232023111111.s3.amazonaws.com/", location; e != a {
-						t.Errorf("expect %v, got %v", e, a)
-					}
 
 					return &s3.CreateBucketOutput{
-						Location: &location,
+						Location: aws.String("http://amazon-polly-09232023111111.s3.amazonaws.com/"),
 					}, nil
 				})
 			},
-			bucketName: "amazon-polly-09232023111111",
-			expect:     "http://amazon-polly-09232023111111.s3.amazonaws.com/",
+			bucketName:     "amazon-polly-09232023111111",
+			expectLocation: "http://amazon-polly-09232023111111.s3.amazonaws.com/",
 		},
 	}
 
 	for _, tt := range cases {
 		t.Run("Test bucket creation", func(t *testing.T) {
 			ctx := context.TODO()
-			content, err := CreateBucketFromS3(ctx, tt.client(t), tt.bucketName)
+			gotLocation, err := CreateBucketFromS3(ctx, tt.client(t), tt.bucketName)
 			if err != nil {
 				t.Fatalf("expect no error, got %v", err)
 			}
-			if e, a := tt.expect, content; e != a {
-				t.Errorf("expect %v, got %v", e, a)
+			if gotLocation != tt.expectLocation {
+				t.Errorf("expect %v, got %v", tt.expectLocation, gotLocation)
+
 			}
 		})
 	}
@@ -94,11 +92,11 @@ func TestGetBucketName(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			gotOutputS3BucketName, err := GetBucketName(tt.args.locationURL)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GetBucketName() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("got error %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if gotOutputS3BucketName != tt.wantOutputS3BucketName {
-				t.Errorf("GetBucketName() gotOutputS3BucketName = %v, want %v", gotOutputS3BucketName, tt.wantOutputS3BucketName)
+				t.Errorf("got OutputS3BucketName %v, want %v", gotOutputS3BucketName, tt.wantOutputS3BucketName)
 			}
 		})
 	}

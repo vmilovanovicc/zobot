@@ -2,6 +2,7 @@ package backend
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/translate"
 	"testing"
 )
@@ -13,12 +14,11 @@ func (m mockTranslateTextAPI) TranslateText(ctx context.Context, params *transla
 }
 
 func TestTranslateTextFromTranslate(t *testing.T) {
-	translatedText := "Buenas noches"
 	cases := []struct {
-		client   func(t *testing.T) TranslateTranslateTextAPI
-		language string
-		text     string
-		expect   string
+		client               func(t *testing.T) TranslateTranslateTextAPI
+		language             string
+		text                 string
+		expectTranslatedText string
 	}{
 		{
 			client: func(t *testing.T) TranslateTranslateTextAPI {
@@ -38,24 +38,24 @@ func TestTranslateTextFromTranslate(t *testing.T) {
 					}
 
 					return &translate.TranslateTextOutput{
-						TranslatedText: &translatedText,
+						TranslatedText: aws.String("Buenas noches"),
 					}, nil
 				})
 			},
-			language: "es",
-			text:     "Good evening",
-			expect:   "Buenas noches",
+			language:             "es",
+			text:                 "Good evening",
+			expectTranslatedText: "Buenas noches",
 		},
 	}
 
 	for _, tt := range cases {
 		t.Run("Test translation", func(t *testing.T) {
 			ctx := context.TODO()
-			content, err := TranslateTextFromTranslate(ctx, tt.client(t), tt.text, tt.language)
+			gotTranslatedText, err := TranslateTextFromTranslate(ctx, tt.client(t), tt.text, tt.language)
 			if err != nil {
 				t.Fatalf("expect no error, got %v", err)
 			}
-			if e, a := tt.expect, content; e != a {
+			if e, a := tt.expectTranslatedText, gotTranslatedText; e != a {
 				t.Errorf("expect %v, got %v", e, a)
 			}
 		})

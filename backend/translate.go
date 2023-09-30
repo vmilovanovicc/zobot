@@ -3,6 +3,7 @@ package backend
 import (
 	context "context"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/translate"
 	"log"
 )
@@ -16,9 +17,9 @@ func TranslateText(text, language string) (string, error) {
 	sourceLanguageCode := "auto"
 
 	params := &translate.TranslateTextInput{
-		Text:               &text,
-		SourceLanguageCode: &sourceLanguageCode,
-		TargetLanguageCode: &language,
+		Text:               aws.String(text),
+		SourceLanguageCode: aws.String(sourceLanguageCode),
+		TargetLanguageCode: aws.String(language),
 	}
 
 	ctx := context.TODO()

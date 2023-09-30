@@ -3,8 +3,9 @@ package backend
 import (
 	"context"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	typesS3 "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"log"
 	"net/url"
 	"strings"
@@ -12,15 +13,15 @@ import (
 )
 
 // CreateBucket creates an S3 bucket to store the output of Amazon Polly Synthesis Tasks i.e. audio streams.
-func CreateBucket(bucketName string) (location string, err error) {
+func CreateBucket(bucketName string) (string, error) {
 	cfg := LoadAWSConfig()
 	client := s3.NewFromConfig(cfg)
 	bucketName = fmt.Sprintf("%s-%s", "amazon-polly-audio", time.Now().Format("01022006150405"))
 
 	params := &s3.CreateBucketInput{
-		Bucket: &bucketName,
-		CreateBucketConfiguration: &types.CreateBucketConfiguration{
-			LocationConstraint: types.BucketLocationConstraint(region),
+		Bucket: aws.String(bucketName),
+		CreateBucketConfiguration: &typesS3.CreateBucketConfiguration{
+			LocationConstraint: typesS3.BucketLocationConstraint(region),
 		}, // basic configuration
 	}
 	ctx := context.TODO()
@@ -29,13 +30,12 @@ func CreateBucket(bucketName string) (location string, err error) {
 		log.Fatalf("failed to create s3 bucket, error:  %v\n", err)
 		return "", err
 	}
-	location = *resp.Location
-	fmt.Println(location)
-	return location, nil
+	fmt.Println(*resp.Location)
+	return *resp.Location, nil
 }
 
 // GetBucketName retrieves the S3 bucket name.
-func GetBucketName(locationURL string) (outputS3BucketName string, err error) {
+func GetBucketName(locationURL string) (string, error) {
 	parsedURL, err := url.Parse(locationURL)
 	if err != nil {
 		log.Fatalf("failed to parse S3 bucket locationURL, error: %v\n", err)
@@ -45,7 +45,7 @@ func GetBucketName(locationURL string) (outputS3BucketName string, err error) {
 	if len(hostParts) < 3 {
 		log.Fatalf("invalid s3 location URL: %s", locationURL)
 	}
-	outputS3BucketName = hostParts[0]
+	outputS3BucketName := hostParts[0]
 	fmt.Println(outputS3BucketName)
 	return outputS3BucketName, nil
 }

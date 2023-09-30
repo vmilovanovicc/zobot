@@ -5,10 +5,11 @@ package backend
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/polly"
 	typesPolly "github.com/aws/aws-sdk-go-v2/service/polly/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	typesS3 "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/translate"
 	"strings"
 )
@@ -24,9 +25,9 @@ type TranslateTranslateTextAPI interface {
 func TranslateTextFromTranslate(ctx context.Context, api TranslateTranslateTextAPI, text, language string) (string, error) {
 	sourceLanguageCode := "auto"
 	response, err := api.TranslateText(ctx, &translate.TranslateTextInput{
-		Text:               &text,
-		TargetLanguageCode: &language,
-		SourceLanguageCode: &sourceLanguageCode,
+		Text:               aws.String(text),
+		TargetLanguageCode: aws.String(language),
+		SourceLanguageCode: aws.String(sourceLanguageCode),
 	})
 	if err != nil {
 		return "", err
@@ -44,9 +45,9 @@ type S3CreateBucketAPI interface {
 
 func CreateBucketFromS3(ctx context.Context, api S3CreateBucketAPI, bucketName string) (string, error) {
 	response, err := api.CreateBucket(ctx, &s3.CreateBucketInput{
-		Bucket: &bucketName,
-		CreateBucketConfiguration: &types.CreateBucketConfiguration{
-			LocationConstraint: types.BucketLocationConstraint(region),
+		Bucket: aws.String(bucketName),
+		CreateBucketConfiguration: &typesS3.CreateBucketConfiguration{
+			LocationConstraint: typesS3.BucketLocationConstraint(region),
 		},
 	})
 	if err != nil {
@@ -65,16 +66,17 @@ type PollyStartSpeechSynthesisTaskAPI interface {
 
 func StartSpeechSynthesisTaskFromPolly(ctx context.Context, api PollyStartSpeechSynthesisTaskAPI, text, bucketName, languageCode, targetVoice string) (string, string, error) {
 	response, err := api.StartSpeechSynthesisTask(ctx, &polly.StartSpeechSynthesisTaskInput{
-		Text:               &text,
-		OutputS3BucketName: &bucketName,
+		Text:               aws.String(text),
+		OutputS3BucketName: aws.String(bucketName),
 		VoiceId:            typesPolly.VoiceId(targetVoice),
 		LanguageCode:       typesPolly.LanguageCode(languageCode),
 		OutputFormat:       typesPolly.OutputFormatMp3,
 		Engine:             typesPolly.EngineStandard,
 	})
 	if err != nil {
-		return "", "", nil
+		return "", "", err
 	}
 	outputURI := strings.Split(*response.SynthesisTask.OutputUri, "/")
-	return *response.SynthesisTask.TaskId, outputURI[len(outputURI)-1], nil
+	objectName := outputURI[len(outputURI)-1]
+	return *response.SynthesisTask.TaskId, objectName, nil
 }
