@@ -55,8 +55,8 @@ func TestTranslateTextFromTranslate(t *testing.T) {
 			if err != nil {
 				t.Fatalf("expect no error, got %v", err)
 			}
-			if e, a := tt.expectTranslatedText, gotTranslatedText; e != a {
-				t.Errorf("expect %v, got %v", e, a)
+			if tt.expectTranslatedText != gotTranslatedText {
+				t.Errorf("expect %v, got %v", tt.expectTranslatedText, gotTranslatedText)
 			}
 		})
 	}

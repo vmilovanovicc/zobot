@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/polly"
-	"github.com/aws/aws-sdk-go-v2/service/polly/types"
+	typesPolly "github.com/aws/aws-sdk-go-v2/service/polly/types"
 	"log"
 	"strings"
 )
@@ -33,15 +33,15 @@ func GetSpeechSynthesisTaskId(text, bucketName, languageCode, targetVoice string
 	client := polly.NewFromConfig(cfg)
 
 	targetVoice, _ = GetTargetVoice(languageCode)
-	targetVoiceId := types.VoiceId(targetVoice)
+	targetVoiceId := typesPolly.VoiceId(targetVoice)
 	bucketLocation, _ := CreateBucket("")
 	bucketName, _ = GetBucketName(bucketLocation)
 
 	params := &polly.StartSpeechSynthesisTaskInput{
 		Text:               aws.String(text),
 		OutputS3BucketName: aws.String(bucketName),
-		OutputFormat:       types.OutputFormatMp3,
-		Engine:             types.EngineStandard,
+		OutputFormat:       typesPolly.OutputFormatMp3,
+		Engine:             typesPolly.EngineStandard,
 		VoiceId:            targetVoiceId,
 	}
 
@@ -56,4 +56,35 @@ func GetSpeechSynthesisTaskId(text, bucketName, languageCode, targetVoice string
 	fmt.Println(*resp.SynthesisTask.TaskId)
 	fmt.Println(objectName)
 	return *resp.SynthesisTask.TaskId, objectName, nil
+}
+
+// GetSpeechSynthesisTaskStatus returns the current status of the individual speech synthesis task.
+// Will not wait for the SpeechSynthesisTask to complete.
+func GetSpeechSynthesisTaskStatus(taskId string) (typesPolly.TaskStatus, error) {
+	cfg := LoadAWSConfig()
+	client := polly.NewFromConfig(cfg)
+
+	params := &polly.GetSpeechSynthesisTaskInput{
+		TaskId: aws.String(taskId),
+	}
+
+	ctx := context.TODO()
+	resp, err := client.GetSpeechSynthesisTask(ctx, params)
+	if err != nil {
+		log.Fatalf("failed to retrieve task status, error: %v", err)
+		return "", nil
+	}
+
+	status := resp.SynthesisTask.TaskStatus
+	if status == "failed" {
+		fmt.Printf("current status: %v\n, reason: %v", status, resp.SynthesisTask.TaskStatusReason)
+	} else if status == "scheduled" || status == "inProgress" {
+		fmt.Printf("current status: %v", status)
+	} else {
+		fmt.Printf("current status: %v", status)
+		fmt.Printf("Pathway for the output speech file: %v\n", resp.SynthesisTask.OutputUri)
+	}
+
+	fmt.Println(status)
+	return status, nil
 }

@@ -8,5 +8,6 @@ func main() {
 	locationURL, _ := backend.CreateBucket("")
 	backend.GetBucketName(locationURL)
 	backend.GetTargetVoice("fr")
-	backend.GetSpeechSynthesisTaskId("Testing speech to voice functionality", "", "es", "")
+	taskId, _, _ := backend.GetSpeechSynthesisTaskId("Testing speech to voice functionality", "", "es", "")
+	backend.GetSpeechSynthesisTaskStatus(taskId)
 }
