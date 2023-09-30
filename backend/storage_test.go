@@ -70,3 +70,36 @@ func TestCreateBucketFromS3(t *testing.T) {
 		})
 	}
 }
+
+func TestGetBucketName(t *testing.T) {
+	type args struct {
+		locationURL string
+	}
+	tests := []struct {
+		name                   string
+		args                   args
+		wantOutputS3BucketName string
+		wantErr                bool
+	}{
+		{
+			name: "Test retrieving S3 bucket name",
+			args: args{
+				locationURL: "http://amazon-polly-09232023111111.s3.amazonaws.com/",
+			},
+			wantOutputS3BucketName: "amazon-polly-09232023111111",
+			wantErr:                false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotOutputS3BucketName, err := GetBucketName(tt.args.locationURL)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetBucketName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotOutputS3BucketName != tt.wantOutputS3BucketName {
+				t.Errorf("GetBucketName() gotOutputS3BucketName = %v, want %v", gotOutputS3BucketName, tt.wantOutputS3BucketName)
+			}
+		})
+	}
+}

@@ -36,7 +36,6 @@ func CreateBucket(bucketName string) (location string, err error) {
 
 // GetBucketName retrieves the S3 bucket name.
 func GetBucketName(locationURL string) (outputS3BucketName string, err error) {
-	locationURL, _ = CreateBucket("")
 	parsedURL, err := url.Parse(locationURL)
 	if err != nil {
 		log.Fatalf("failed to parse S3 bucket locationURL, error: %v\n", err)
