@@ -80,3 +80,21 @@ func StartSpeechSynthesisTaskFromPolly(ctx context.Context, api PollyStartSpeech
 	objectName := outputURI[len(outputURI)-1]
 	return *response.SynthesisTask.TaskId, objectName, nil
 }
+
+//////////////////////////////////////////
+//    GetSpeechSynthesisTask Mock
+//////////////////////////////////////////
+
+type PollyGetSpeechSynthesisTaskAPI interface {
+	GetSpeechSynthesisTask(ctx context.Context, params *polly.GetSpeechSynthesisTaskInput, optFns ...func(*polly.Options)) (*polly.GetSpeechSynthesisTaskOutput, error)
+}
+
+func GetSpeechSynthesisTaskFromPolly(ctx context.Context, api PollyGetSpeechSynthesisTaskAPI, taskId string) (typesPolly.TaskStatus, error) {
+	response, err := api.GetSpeechSynthesisTask(ctx, &polly.GetSpeechSynthesisTaskInput{
+		TaskId: aws.String(taskId),
+	})
+	if err != nil {
+		return "", err
+	}
+	return response.SynthesisTask.TaskStatus, nil
+}

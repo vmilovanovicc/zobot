@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/polly"
-	"github.com/aws/aws-sdk-go-v2/service/polly/types"
+	typesPolly "github.com/aws/aws-sdk-go-v2/service/polly/types"
 	"testing"
 )
 
@@ -83,7 +83,7 @@ func TestStartSpeechSynthesisTaskFromPolly(t *testing.T) {
 					}
 
 					return &polly.StartSpeechSynthesisTaskOutput{
-						SynthesisTask: &types.SynthesisTask{
+						SynthesisTask: &typesPolly.SynthesisTask{
 							TaskId:    aws.String("mock-task-id"),
 							OutputUri: aws.String("mock-task-id.mp3"),
 						},
@@ -111,6 +111,51 @@ func TestStartSpeechSynthesisTaskFromPolly(t *testing.T) {
 			}
 			if gotObjectName != tt.expectObjectName {
 				t.Errorf("got objectName %v, want %v", gotObjectName, gotTaskId)
+			}
+		})
+	}
+}
+
+type mockGetSpeechSynthesisTaskAPI func(ctx context.Context, params *polly.GetSpeechSynthesisTaskInput, optFns ...func(*polly.Options)) (*polly.GetSpeechSynthesisTaskOutput, error)
+
+func (m mockGetSpeechSynthesisTaskAPI) GetSpeechSynthesisTask(ctx context.Context, params *polly.GetSpeechSynthesisTaskInput, optFns ...func(*polly.Options)) (*polly.GetSpeechSynthesisTaskOutput, error) {
+	return m(ctx, params, optFns...)
+}
+
+func TestGetSpeechSynthesisTaskFromPolly(t *testing.T) {
+	cases := []struct {
+		client           func(t *testing.T) PollyGetSpeechSynthesisTaskAPI
+		taskId           string
+		expectTaskStatus typesPolly.TaskStatus
+	}{
+		{
+			client: func(t *testing.T) PollyGetSpeechSynthesisTaskAPI {
+				return mockGetSpeechSynthesisTaskAPI(func(ctx context.Context, params *polly.GetSpeechSynthesisTaskInput, optFns ...func(*polly.Options)) (*polly.GetSpeechSynthesisTaskOutput, error) {
+					t.Helper()
+					if *params.TaskId == "" {
+						t.Fatalf("expect task id to not be nil")
+					}
+
+					return &polly.GetSpeechSynthesisTaskOutput{
+						SynthesisTask: &typesPolly.SynthesisTask{
+							TaskStatus: "mock-status-scheduled",
+						},
+					}, nil
+				})
+			},
+			taskId:           "mock-task-id-123",
+			expectTaskStatus: "mock-status-scheduled",
+		},
+	}
+	for _, tt := range cases {
+		t.Run("Test task status", func(t *testing.T) {
+			ctx := context.TODO()
+			gotTaskStatus, err := GetSpeechSynthesisTaskFromPolly(ctx, tt.client(t), tt.taskId)
+			if err != nil {
+				t.Fatalf("expect no error, got: %v", err)
+			}
+			if tt.expectTaskStatus != gotTaskStatus {
+				t.Errorf("expect %v, got %v", tt.expectTaskStatus, gotTaskStatus)
 			}
 		})
 	}
