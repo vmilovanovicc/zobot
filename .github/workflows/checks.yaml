@@ -45,6 +45,9 @@ jobs:
       - name: Run tests (if applicable)
         run: go test -v ./...
 
+      - name: Run Code Coverage
+        run: go test -cover ./...
+
         # Validate Terraform Code
       - name: Check Terraform code formatting
         run: terraform fmt -check=true -recursive
