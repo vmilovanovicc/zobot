@@ -1,0 +1,99 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install Tools
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '>=1.20.3'
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+        # Validate Go Code
+      - name: Check Go code formatting
+        run: gofmt -l . | tee fmt.log && test ! -s fmt.log
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Build Go code
+        run: go build -v ./...
+
+      - name: Run tests (if applicable)
+        run: go test -v ./...
+
+      - name: Run Code Coverage
+        run: go test -cover ./...
+
+        # Validate Terraform Code
+      - name: Check Terraform code formatting
+        run: terraform fmt -check=true -recursive
+        continue-on-error: true
+
+      - name: Validate Terraform configuration
+        run: terraform validate
+        continue-on-error: true
+
+      # Secrets & Code Vulnerabilities
+      - name: Check for secrets
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.ref == 'refs/heads/main')
+        uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
+        with:
+          args: --fail-verified ${{ github.ref }} HEAD
+
+      - name: Golang - Run Snyk to check for vulnerabilities
+        uses: snyk/actions/golang@master
+        continue-on-error: true # To make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk_go.sarif
+
+      - name: Terraform - Run Snyk to check for vulnerabilities
+        uses: snyk/actions/iac@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk_tf.sarif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
