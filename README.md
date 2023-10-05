@@ -3,13 +3,8 @@ Chatbot Translator App with AWS, Golang and Terraform
 
 <img alt="ProjectStatus" src="https://img.shields.io/badge/IN%20PROGRESS-097969?style=for-the-badge&logo=IN%20PROGRESS&logoColor=FFF">
 
-![GitHub language count](https://img.shields.io/github/languages/count/vmilovanovicc/zobot)
 ![GitHub top language](https://img.shields.io/github/languages/top/vmilovanovicc/zobot)
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/vmilovanovicc/zobot/checks.yaml)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/vmilovanovicc/:zobot)
-![GitHub](https://img.shields.io/github/license/vmilovanovicc/zobot)
-![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/vmilovanovicc/zobot)
-![Go Version](https://img.shields.io/github/go-mod/go-version/vmilovanovicc/zobot)
 
 <br/>
 <img alt="Go" src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white">
