@@ -50,8 +50,8 @@ func GetBucketName(locationURL string) (string, error) {
 	return outputS3BucketName, nil
 }
 
-// GeneratePresignedURL retrieves a presigned URL for an Amazon S3 bucket object.
-func GeneratePresignedURL(bucketName, objectName string, expires time.Time) (string, error) {
+// GetPresignedURL retrieves a presigned URL for an Amazon S3 bucket object.
+func GetPresignedURL(bucketName, objectName string, expires time.Time) (string, error) {
 	cfg := LoadAWSConfig()
 	client := s3.NewFromConfig(cfg)
 	psClient := s3.NewPresignClient(client)

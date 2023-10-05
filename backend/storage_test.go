@@ -3,9 +3,11 @@ package backend
 import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"regexp"
 	"testing"
+	"time"
 )
 
 type mockCreateBucketAPI func(ctx context.Context, params *s3.CreateBucketInput, optFns ...func(*s3.Options)) (*s3.CreateBucketOutput, error)
@@ -97,6 +99,63 @@ func TestGetBucketName(t *testing.T) {
 			}
 			if gotOutputS3BucketName != tt.wantOutputS3BucketName {
 				t.Errorf("got OutputS3BucketName %v, want %v", gotOutputS3BucketName, tt.wantOutputS3BucketName)
+			}
+		})
+	}
+}
+
+type mockGetPresignedURLAPI func(ctx context.Context, params *s3.GetObjectInput, optFns ...func(*s3.PresignOptions)) (*v4.PresignedHTTPRequest, error)
+
+func (m mockGetPresignedURLAPI) GetPresignedURL(ctx context.Context, params *s3.GetObjectInput, optFns ...func(*s3.PresignOptions)) (*v4.PresignedHTTPRequest, error) {
+	return m(ctx, params, optFns...)
+}
+
+func TestGetPresignedURLFromS3(t *testing.T) {
+	cases := []struct {
+		client     func(t *testing.T) S3PresignGetObjectAPI
+		bucketName string
+		objectName string
+		expires    time.Time
+		expectURL  string
+	}{
+		{
+			client: func(t *testing.T) S3PresignGetObjectAPI {
+				return mockGetPresignedURLAPI(func(ctx context.Context, params *s3.GetObjectInput, optFns ...func(*s3.PresignOptions)) (*v4.PresignedHTTPRequest, error) {
+					t.Helper()
+
+					if *params.Bucket == "" {
+						t.Fatalf("expect bucket name to not be nil")
+					}
+
+					if *params.Key == "" {
+						t.Fatalf("expect object name to not be nil")
+					}
+
+					if params.ResponseExpires.IsZero() {
+						t.Fatalf("expect time to be set, currently not set")
+					}
+
+					return &v4.PresignedHTTPRequest{
+						URL: "https://mock-bucket.s3.eu-central-1.amazonaws.com/mock-object.mp3?XXXX",
+					}, nil
+				})
+			}, // end client
+			bucketName: "mock-bucket",
+			objectName: "mock-object",
+			expires:    time.Now().Add(3600 * time.Second),
+			expectURL:  "https://mock-bucket.s3.eu-central-1.amazonaws.com/mock-object.mp3?XXXX",
+		},
+	}
+	for _, tt := range cases {
+		t.Run("Test presigned URL", func(t *testing.T) {
+			ctx := context.TODO()
+
+			gotPresignedURL, err := GetPresignedURLFromS3(ctx, tt.client(t), tt.bucketName, tt.objectName, tt.expires)
+			if err != nil {
+				t.Fatalf("expect no error, got: %v", err)
+			}
+			if tt.expectURL != gotPresignedURL {
+				t.Errorf("expect %v, got %v", tt.expectURL, gotPresignedURL)
 			}
 		})
 	}

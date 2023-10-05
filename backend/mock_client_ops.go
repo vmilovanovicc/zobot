@@ -6,12 +6,14 @@ package backend
 import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 	"github.com/aws/aws-sdk-go-v2/service/polly"
 	typesPolly "github.com/aws/aws-sdk-go-v2/service/polly/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	typesS3 "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/translate"
 	"strings"
+	"time"
 )
 
 //////////////////////////////////////////
@@ -54,6 +56,26 @@ func CreateBucketFromS3(ctx context.Context, api S3CreateBucketAPI, bucketName s
 		return "", err
 	}
 	return *response.Location, nil
+}
+
+//////////////////////////////////////////
+//    PresignGetObject Mock
+//////////////////////////////////////////
+
+type S3PresignGetObjectAPI interface {
+	GetPresignedURL(ctx context.Context, params *s3.GetObjectInput, optFns ...func(options *s3.PresignOptions)) (*v4.PresignedHTTPRequest, error)
+}
+
+func GetPresignedURLFromS3(ctx context.Context, api S3PresignGetObjectAPI, bucketName, objectName string, expires time.Time) (string, error) {
+	response, err := api.GetPresignedURL(ctx, &s3.GetObjectInput{
+		Bucket:          aws.String(bucketName),
+		Key:             aws.String(objectName),
+		ResponseExpires: aws.Time(expires),
+	})
+	if err != nil {
+		return "", err
+	}
+	return response.URL, nil
 }
 
 //////////////////////////////////////////
