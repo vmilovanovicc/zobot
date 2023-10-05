@@ -72,13 +72,6 @@ jobs:
         with:
           args: --sarif-file-output=snyk_go.sarif
 
-      - name: Upload result to GitHub Code Scanning
-        if: github.event_name == 'pull_request'
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk_go.sarif
-
-
       - name: Terraform - Run Snyk to check for vulnerabilities
         uses: snyk/actions/iac@master
         continue-on-error: true
@@ -87,11 +80,6 @@ jobs:
         with:
           args: --sarif-file-output=snyk_tf.sarif
 
-      - name: Upload result to GitHub Code Scanning
-        if: github.event_name == 'pull_request'
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk_tf.sarif
 
 
 
