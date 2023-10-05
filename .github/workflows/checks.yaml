@@ -59,6 +59,7 @@ jobs:
 
       # Secrets & Code Vulnerabilities
       - name: Check for secrets
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.ref == 'refs/heads/main')
         uses: trufflesecurity/TruffleHog-Enterprise-Github-Action@main
         with:
           args: --fail-verified ${{ github.ref }} HEAD
@@ -72,10 +73,11 @@ jobs:
           args: --sarif-file-output=snyk_go.sarif
 
       - name: Upload result to GitHub Code Scanning
+        if: github.event_name == 'pull_request'
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk_go.sarif
-        if: github.event_name == 'pull_request'
+
 
       - name: Terraform - Run Snyk to check for vulnerabilities
         uses: snyk/actions/iac@master
@@ -86,10 +88,11 @@ jobs:
           args: --sarif-file-output=snyk_tf.sarif
 
       - name: Upload result to GitHub Code Scanning
+        if: github.event_name == 'pull_request'
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk_tf.sarif
-        if: github.event_name == 'pull_request'
+
 
 
 
